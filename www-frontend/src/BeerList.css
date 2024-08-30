@@ -1,0 +1,56 @@
+/* BeerList.css */
+
+/* Container styles */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+    background: #fae25d;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Heading styles */
+  .heading {
+    font-size: 2rem;
+    color: #f9a825; /* Yellow accent */
+    margin-bottom: 1rem;
+  }
+  
+  /* Search input styles */
+  .search-input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+    outline-color: #f9a825; /* Yellow outline on focus */
+  }
+  
+  /* List container styles */
+  .beer-list-container {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* List item styles */
+  .beer-list-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid #f9a825; /* Yellow border */
+    font-size: 1.1rem;
+    color: #333;
+    background-color: #fff8e1; /* Light yellow background */
+  }
+  
+  .beer-list-item:last-child {
+    border-bottom: none;
+  }
+  
+  .beer-list-item:hover {
+    background-color: #f9a825; /* Yellow background on hover */
+    color: #fff; /* White text on hover for contrast */
+  }
+  
