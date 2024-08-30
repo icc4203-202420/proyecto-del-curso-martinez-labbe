@@ -6,10 +6,10 @@ function BeerList() {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    axios.get('/api/v1/beers')
+    axios.get('http://localhost:3001/api/v1/beers')
       .then(response => {
-        console.log('Beers data:', response.data); // Verifica la respuesta de la API
-        setBeers(response.data);
+        console.log('Beers data:', response.data.beers); // Asegúrate de que los datos sean correctos
+        setBeers(response.data.beers); // Asumiendo que 'beers' es la clave que contiene la lista de cervezas
       })
       .catch(error => {
         console.error('Error fetching the beers:', error);

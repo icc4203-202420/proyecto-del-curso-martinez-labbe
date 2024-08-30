@@ -6,16 +6,18 @@ function BarList() {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    axios.get('/api/v1/bars')
+    // Llamada a la API para obtener la lista de bares
+    axios.get('http://localhost:3001/api/v1/bars') // Cambié la URL para ser explícito
       .then(response => {
-        console.log('Bars data:', response.data); // Verifica la respuesta de la API
-        setBars(response.data);
+        console.log('Bars data:', response.data.bars); // Asegúrate de que los datos estén correctos
+        setBars(response.data.bars); // Asumiendo que 'bars' es la clave que contiene la lista de bares
       })
       .catch(error => {
         console.error('Error fetching the bars:', error);
       });
   }, []);
 
+  // Filtrar bares por nombre
   const filteredBars = bars.filter(bar =>
     bar.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
