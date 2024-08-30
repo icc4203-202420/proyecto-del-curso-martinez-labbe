@@ -3,6 +3,8 @@ import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemIcon, List
 import { Link, Routes, Route } from 'react-router-dom';
 import CottageIcon from '@mui/icons-material/Cottage';
 import Home from './components/Home';
+import BeerList from './components/BeerList'; // Importar el componente de cervezas
+import BarList from './components/BarList'; // Importar el componente de bares
 import Beer from './assets/beer.svg';
 import './App.css';
 
@@ -28,6 +30,18 @@ function App() {
                 </ListItemIcon>
                 <ListItemText primary="Home" />
               </ListItem>
+              <ListItem button component={Link} to="/beers">
+                <ListItemIcon>
+                  <CottageIcon />
+                </ListItemIcon>
+                <ListItemText primary="Cervezas" />
+              </ListItem>
+              <ListItem button component={Link} to="/bars">
+                <ListItemIcon>
+                  <CottageIcon />
+                </ListItemIcon>
+                <ListItemText primary="Bares" />
+              </ListItem>
             </List>
           </Drawer>
         </Toolbar>
@@ -35,6 +49,8 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/beers" element={<BeerList />} /> {/* Ruta para las cervezas */}
+        <Route path="/bars" element={<BarList />} /> {/* Ruta para los bares */}
       </Routes>
     </>
   );
