@@ -4,11 +4,16 @@ class API::V1::EventsController < ApplicationController
 
   respond_to :json
   before_action :set_event, only: [:show, :update, :destroy]
+  before_action :set_bar, only: [:index, :create] # Añadi
   before_action :verify_jwt_token, only: [:create, :update, :destroy]
 
   def index
-    @events = Event.all
-    render json: { events: @events }, status: :ok
+    if @bar
+      @events = @bar.events
+    else
+      @events = Event.includes(:bar).all # Incluye los bares para evitar consultas adicionales
+    end
+    render json: @events.as_json(include: :bar), status: :ok # Incluye el bar en la respuesta JSON
   end
 
   def show
@@ -23,7 +28,7 @@ class API::V1::EventsController < ApplicationController
   end
 
   def create
-    @event = Event.new(event_params.except(:image_base64))
+    @event = @bar.events.build(event_params.except(:image_base64)) # modificado
     handle_image_attachment if event_params[:image_base64]
 
     if @event.save
@@ -56,6 +61,11 @@ class API::V1::EventsController < ApplicationController
   def set_event
     @event = Event.find_by(id: params[:id])
     render json: { error: 'Event not found' }, status: :not_found unless @event
+  end
+
+  def set_bar
+    @bar = Bar.find_by(id: params[:bar_id]) if params[:bar_id]
+    render json: { error: 'Bar not found' }, status: :not_found if params[:bar_id] && !@bar
   end
 
   def event_params
