@@ -1,35 +1,21 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, IconButton, Drawer,Button,styled, List, ListItem, ListItemText, ListItemIcon, Card, CardHeader, CardContent } from '@mui/material';
+import './App.css';
+import Beer from './assets/beer.svg';
+import Log_bar from './assets/login_bar.svg';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="container">
+      <img src={Beer} alt="beer" className='beer-icon'/>
+      <Card className='log_in'>
+          <CardHeader title="Welcome to Beer" className='header' / >
+          <Button variant="contained" className='log_in_button' styled >Log In</Button>
+      </Card>
+    </div>
+  );
 }
 
-export default App
+export default App;
