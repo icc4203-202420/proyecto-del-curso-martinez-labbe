@@ -9,6 +9,7 @@ import BarEventsList from './components/BarEventsList';
 import Beer from './assets/beer.svg';
 import './App.css';
 import FriendList from './components/FriendList';
+import Signup from './components/Signup';
 
 function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -56,6 +57,12 @@ function App() {
                 </ListItemIcon>
                 <ListItemText primary="Amigos" />
               </ListItem>
+              <ListItem button component={Link} to="/signup">
+                <ListItemIcon>
+                  <CottageIcon />
+                </ListItemIcon>
+                <ListItemText primary="Signup" />
+              </ListItem>
             </List>
           </Drawer>
         </Toolbar>
@@ -67,6 +74,7 @@ function App() {
         <Route path="/bars" element={<BarList />} /> 
         <Route path="/events" element={<BarEventsList />} />
         <Route path="/friends" element={<FriendList />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </>
   );
