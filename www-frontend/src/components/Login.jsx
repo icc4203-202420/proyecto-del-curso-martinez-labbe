@@ -28,7 +28,7 @@ function Login({setLogUser}) {
             const user = response.data.status.data.user;
             localStorage.setItem('loguser', JSON.stringify(user));
             setLogUser(user);
-            alert('Usuario creado correctamente');  
+            alert('Ingresaste correctamente');  
             navigate("/");
         });
         

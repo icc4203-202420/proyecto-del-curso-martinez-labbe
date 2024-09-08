@@ -6,58 +6,69 @@ import * as Yup from 'yup';
 import fetchAxios from './fetchaxios';
 
 const BeerDetail = () => {
+    
     const { id } = useParams();  // `id` is the beer ID
     const [beer, setBeer] = useState({});
     const [reviews, setReviews] = useState([]);
+    const [canSubmit, setCanSubmit] = useState(true);
     const logUser = JSON.parse(localStorage.getItem('loguser'));  // Logged-in user info
     const navigate = useNavigate();  // Added navigate for redirection
 
     // Create Yup validation schema
     const validationSchema = Yup.object({
-        review: Yup.string().min(10, 'La reseña debe tener al menos 10 caracteres').required('Reseña es obligatoria'),
-        rating: Yup.number().min(1, 'El valor mínimo es 1').max(5, 'El valor máximo es 5').required('La calificación es obligatoria')
+        review: Yup.string()
+            .test(
+                'minWords',
+                'La reseña debe tener al menos 15 palabras',
+                value => value && value.split(' ').filter(word => word.length > 0).length >= 15
+            )
+            .required('Reseña es obligatoria'),
+        rating: Yup.number()
+            .min(1, 'El valor mínimo es 1')
+            .max(5, 'El valor máximo es 5')
+            .required('La calificación es obligatoria')
     });
+    
+    
+    
+    
 
     // Formik for review form submission
-    const formik = useFormik({
-        initialValues: {
-            review: '',
-            rating: ''
-        },
-        validationSchema: validationSchema,  // Attach validation schema
-        onSubmit: async (values, { setSubmitting, validateForm }) => {
-            try {
-                // Ensure the backend receives the required data format including `beer_id`
-                const data = {
-                    beer_id: id,  // Associate the review with the current beer
-                    review: values.review,
-                    rating: values.rating
-                };
+    // Formik for review form submission
+const formik = useFormik({
+    initialValues: {
+        review: '',
+        rating: ''
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values, { setSubmitting, validateForm }) => {
+        try {
+            const data = {
+                user_name: logUser.first_name,  // Ensure the correct user association
+                user_id: logUser.id,  // Ensure the correct user association
+                beer_id: id,          // Ensure the correct beer association
+                text: values.review,  // Rename if backend expects 'text' instead of 'review'
+                rating: values.rating
+            };
 
-                // Log the data to check what's being sent
-                console.log('Submitting review:', data);
+            console.log('Submitting review:', data);
 
-                // Submit the review to the API
-                const response = await fetchAxios.post(`/users/${logUser.id}/reviews`, data);
-                
-                // Update the reviews list after successful submission
-                setReviews([...reviews, response.data]);
-                console.log('Review posted successfully:', response.data);
+            // Submit the review to the API
+            const response = await fetchAxios.post(`users/${logUser.id}/reviews`, data);
 
-                alert('Reseña enviada correctamente');
-                
-                // Optionally, redirect or refresh
-                navigate("/");
-            } catch (error) {
-                console.error('Error submitting the review:', error);
-            } finally {
-                setSubmitting(false);
-                validateForm();  // Run validation after submission
-            }
+            // Update the reviews state after successful submission
+            setReviews([...reviews, response.data]);
+
+            alert('Reseña enviada correctamente');
+        } catch (error) {
+            console.error('Error submitting the review:', error.response ? error.response.data : error.message);
+        } finally {
+            setSubmitting(false);
         }
-    });
+    }
+});
 
-    // Fetch beer details
+
     useEffect(() => {
         fetchAxios.get(`/beers/${id}`)
             .then(response => {
@@ -70,7 +81,7 @@ const BeerDetail = () => {
 
     // Fetch reviews for the logged-in user
     useEffect(() => {
-        fetchAxios.get(`/users/${logUser.id}/reviews`)
+        fetchAxios.get(`reviews`)
             .then(response => {
                 setReviews(response.data.reviews);
             })
@@ -79,6 +90,38 @@ const BeerDetail = () => {
             });
     }, [id, logUser.id]);
 
+    useEffect(() => {
+        fetchAxios.get(`users/${id}/reviews`)
+            .then(response => {
+                setReviews(response.data.reviews);
+                const userHasReviewed = response.data.reviews.some(review => review.user_id === logUser.id);
+                setCanSubmit(!userHasReviewed);
+            })
+            .catch(error => {
+                console.error('Error fetching the reviews:', error);
+            });
+    }, [id, logUser.id]);
+
+
+    
+
+    let averageRating = 0;
+
+if (reviews.length > 0) {
+    const totalRating = reviews.reduce((acc, review) => acc + parseFloat(review.rating), 0); // Convert rating to a number
+    averageRating = totalRating / reviews.length;
+}
+
+
+
+// Display average rating rounded to one decimal
+    
+    
+
+    
+        
+
+   
     return (
         <>
             <div className="home-bares-container">
@@ -109,8 +152,6 @@ const BeerDetail = () => {
                         </Typography>
                     </CardContent>
                 </Card>
-
-                {/* Review submission form */}
                 <Card>
                     <CardHeader title="Deja una Reseña" />
                     <CardContent>
@@ -145,22 +186,49 @@ const BeerDetail = () => {
                     </CardContent>
                 </Card>
 
-                {/* Display existing reviews */}
                 <Card>
-                    <CardHeader title="Reseñas" />
+                    <CardHeader title="Tus Reseñas" />
                     <CardContent>
-                        {reviews.length > 0 ? (
-                            reviews.map((review, index) => (
-                                <Typography key={index} variant="body1" color="textSecondary">
-                                    {review.review} - Rating: {review.rating}
-                                </Typography>
-                            ))
-                        ) : (
-                            <Typography variant="body1" color="textSecondary">
-                                No hay reseñas todavía.
-                            </Typography>
-                        )}
+                        
+                        {reviews.map(review => (
+                            <div key={review.id}>
+                                {parseInt(id) === parseInt(review.beer_id) && (
+                                    <Card>
+                                        <Typography variant="body1" color="textPrimary" component="p">
+                                            {review.text}
+                                        </Typography>
+                                        <Typography variant="body1" color="textSecondary" component="p">
+                                            {review.rating}
+                                        </Typography>
+                                    </Card>
+                                )}
+                            </div>
+                        ))}
                     </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader title="Calificación Promedio" />
+                    <CardContent>
+                        <Typography variant="h4" color="textPrimary" component="p">
+                            {averageRating.toFixed(1)}
+                        </Typography>
+                    </CardContent>
+                    <CardContent>
+                        {reviews.map(review => (
+                            <div key={review.id}>
+                                {parseInt(logUser.id) === parseInt(review.user_id) && (
+                                    <Card>
+                                        <Typography variant="body1" color="textPrimary" component="p">
+                                            Reseña tuya {review.rating}
+                                        </Typography>
+                                        
+                                    </Card>
+                                )}
+                            </div>
+                        ))}
+                    </CardContent>
+                    
+
                 </Card>
             </div>
         </>
