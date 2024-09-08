@@ -1,3 +1,5 @@
+
+
 .beer-icon {
   height: 1em;
   vertical-align: -0.2em;
@@ -9,3 +11,22 @@
   padding: 2rem;
   text-align: center;
 }
+
+.Text_nav{
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #DABB3F;
+}
+
+.appname{
+  font-size: 6em;
+  font-weight: bold;
+  color: #000000;
+}
+
+.username{
+  font-size: 2em;
+  font-weight: bold;
+  color: #E3B600;
+}
+

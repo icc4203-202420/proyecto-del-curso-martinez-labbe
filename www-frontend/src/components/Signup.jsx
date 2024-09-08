@@ -3,50 +3,49 @@ import { TextField, Button, Typography, Box } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import '../Signup.css'; 
+import fetchAxios from './fetchaxios';
+import {useNavigate} from 'react-router-dom';
+
 
 function Signup() {
+  const navigate = useNavigate();
   // Validación de campos usando Yup
   const validationSchema = Yup.object({
-    firstName: Yup.string().required('Nombre es obligatorio'),
-    lastName: Yup.string().required('Apellido es obligatorio'),
+    first_name: Yup.string().required('Nombre es obligatorio'),
+    last_name: Yup.string().required('Apellido es obligatorio'),
     email: Yup.string().email('Email no es válido').required('Email es obligatorio'),
     handle: Yup.string().required('Handle es obligatorio'),
-    address: Yup.string(), // Campo opcional
     password: Yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('Contraseña es obligatoria'),
-    passwordConfirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Las contraseñas no coinciden').required('Confirmar contraseña es obligatorio'),
+    password_confirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Las contraseñas no coinciden').required('Confirmar contraseña es obligatorio'),
   });
 
   // Configuración de Formik
   const formik = useFormik({
     initialValues: {
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       email: '',
       handle: '',
-      address: '',
       password: '',
-      passwordConfirmation: '',
+      password_confirmation: '',
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, {setSubmitting,validateForm}) => {
       try {
-        const response = await fetch('/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
+        const data = {"user": values};
+        const response = await fetchAxios.post('/signup', data).then((response) => {
+        alert('Usuario creado correctamente');  
+        navigate("/login");
         });
-
-        if (response.ok) {
-          // Manejar éxito (redireccionar, mostrar mensaje, etc.)
-        } else {
-          // Manejar error
-        }
-      } catch (error) {
-        console.error('Error al registrarse:', error);
+        
+        console.log(response.data);
+  
+        validateForm();
+ 
+      } finally {
+        setSubmitting(false);
       }
-    },
+    }
   });
 
   return (
@@ -61,23 +60,23 @@ function Signup() {
       
       <TextField
         label="Nombre"
-        name="firstName"
-        value={formik.values.firstName}
+        name="first_name"
+        value={formik.values.first_name}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-        helperText={formik.touched.firstName && formik.errors.firstName}
+        error={formik.touched.first_name && Boolean(formik.errors.first_name)}
+        helperText={formik.touched.first_name && formik.errors.first_name}
         required
       />
       
       <TextField
         label="Apellido"
-        name="lastName"
-        value={formik.values.lastName}
+        name="last_name"
+        value={formik.values.last_name}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-        helperText={formik.touched.lastName && formik.errors.lastName}
+        error={formik.touched.last_name && Boolean(formik.errors.last_name)}
+        helperText={formik.touched.last_name && formik.errors.last_name}
         required
       />
       
@@ -104,13 +103,7 @@ function Signup() {
         required
       />
       
-      <TextField
-        label="Dirección (opcional)"
-        name="address"
-        value={formik.values.address}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-      />
+      
       
       <TextField
         label="Contraseña"
@@ -126,13 +119,13 @@ function Signup() {
       
       <TextField
         label="Confirmar Contraseña"
-        name="passwordConfirmation"
+        name="password_confirmation"
         type="password"
-        value={formik.values.passwordConfirmation}
+        value={formik.values.password_confirmation}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        error={formik.touched.passwordConfirmation && Boolean(formik.errors.passwordConfirmation)}
-        helperText={formik.touched.passwordConfirmation && formik.errors.passwordConfirmation}
+        error={formik.touched.password_confirmation && Boolean(formik.errors.password_confirmation)}
+        helperText={formik.touched.password_confirmation && formik.errors.password_confirmation}
         required
       />
       

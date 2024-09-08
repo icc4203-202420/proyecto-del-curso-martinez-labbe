@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Link, Routes, Route } from 'react-router-dom';
 import '../BeerList.css'; // Import the CSS file
+
 
 function BeerList() {
   const [beers, setBeers] = useState([]);
@@ -22,17 +25,35 @@ function BeerList() {
 
   return (
     <div className="container">
-      <h2 className="heading">Lista de Cervezas</h2>
-      <input
-        type="text"
-        className="search-input"
-        placeholder="Buscar cerveza..."
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
+      
+          <IconButton edge="start" color="inherit" aria-label="menu">
+            {/* Add menu icon */}
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Lista de Cervezas
+          </Typography>
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Buscar cerveza..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
+      <Drawer>
+        <List>
+          {/* Add list items for navigation */}
+        </List>
+      </Drawer>
       <ul className="beer-list-container">
         {filteredBeers.map(beer => (
-          <li key={beer.id} className="beer-list-item">{beer.name}</li>
+          <Link to={`/beers/${beer.id}`} key={beer.id}>
+          <ListItem key={beer.id} className="beer-list-item">
+            <ListItemIcon>
+              {/* Add icon for each beer */}
+            </ListItemIcon>
+            <ListItemText primary={beer.name} />
+          </ListItem>
+          </Link>
         ))}
       </ul>
     </div>
