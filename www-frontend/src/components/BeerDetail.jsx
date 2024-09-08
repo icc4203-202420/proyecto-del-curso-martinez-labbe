@@ -28,10 +28,6 @@ const BeerDetail = () => {
             .max(5, 'El valor máximo es 5')
             .required('La calificación es obligatoria')
     });
-    
-    
-    
-    
 
     // Formik for review form submission
     // Formik for review form submission
@@ -72,7 +68,7 @@ const formik = useFormik({
     useEffect(() => {
         fetchAxios.get(`/beers/${id}`)
             .then(response => {
-                setBeer(response.data.beer);
+                setBeer(response.data);
             })
             .catch(error => {
                 console.error('Error fetching the beer:', error);
@@ -105,12 +101,26 @@ const formik = useFormik({
 
     
 
-    let averageRating = 0;
 
-if (reviews.length > 0) {
-    const totalRating = reviews.reduce((acc, review) => acc + parseFloat(review.rating), 0); // Convert rating to a number
-    averageRating = totalRating / reviews.length;
+// Initialize averageRating to 0
+let averageRating = 0;
+
+
+// Filter reviews for the specific beer
+const beerReviews = reviews.filter(review => parseInt(id) === parseInt(review.beer_id));
+
+
+// Calculate the average rating only if there are reviews for the current beer
+if (beerReviews.length > 0) {
+    const totalRating = beerReviews.reduce((acc, review) => acc + parseFloat(review.rating), 0); // Convert rating to a number
+    averageRating = totalRating / beerReviews.length;
 }
+
+
+
+
+
+
 
 
 
@@ -124,34 +134,42 @@ if (reviews.length > 0) {
    
     return (
         <>
+
             <div className="home-bares-container">
                 {/* Display beer details */}
                 <Card>
                     <CardHeader title={beer.name} />
                     <CardContent>
                         <Typography variant="body1" color="textSecondary" component="p">
-                            {beer.style}
+                            Style: {beer.style}
                         </Typography>
                         <Typography variant="body1" color="textSecondary" component="p">
-                            {beer.hop}
+                            Hop: {beer.hop}
                         </Typography>
                         <Typography variant="body1" color="textSecondary" component="p">
-                            {beer.yeast}
+                            Yeast: {beer.yeast}
                         </Typography>
                         <Typography variant="body1" color="textSecondary" component="p">
-                            {beer.malts}
+                            Malts{beer.malts}
                         </Typography>
                         <Typography variant="body1" color="textSecondary" component="p">
-                            {beer.ibu}
+                            Ibu: {beer.ibu}
                         </Typography>
                         <Typography variant="body1" color="textSecondary" component="p">
-                            {beer.blg}
+                            Blg: {beer.blg}
                         </Typography>
                         <Typography variant="body1" color="textSecondary" component="p">
-                            {beer.alcohol}
+                            Alcohol: {beer.alcohol}
+                        </Typography>
+                        <Typography variant="body1" color="textSecondary" component="p">
+                        Cervecería: {beer.brand && beer.brand.brewery ? beer.brand.brewery.name : 'No disponible'}
+                        </Typography>
+                        <Typography variant="body1" color="textSecondary" component="p">
+                        Bares: {beer.bars && beer.bars.length > 0 ? beer.bars.map(bar => bar.name).join(', ') : 'No disponible'}
                         </Typography>
                     </CardContent>
                 </Card>
+                
                 <Card>
                     <CardHeader title="Deja una Reseña" />
                     <CardContent>
@@ -214,20 +232,19 @@ if (reviews.length > 0) {
                         </Typography>
                     </CardContent>
                     <CardContent>
-                        {reviews.map(review => (
+                         {reviews.map(review => (
                             <div key={review.id}>
-                                {parseInt(logUser.id) === parseInt(review.user_id) && (
+                                {parseInt(logUser.id) === parseInt(review.user_id) && parseInt(id) === parseInt(review.beer_id) && (
                                     <Card>
                                         <Typography variant="body1" color="textPrimary" component="p">
-                                            Reseña tuya {review.rating}
-                                        </Typography>
-                                        
-                                    </Card>
-                                )}
-                            </div>
-                        ))}
+                                             Reseña tuya {review.rating}
+                                        </Typography> 
+                                    </Card> 
+                                        )}
+                            </div> 
+                        ))} 
                     </CardContent>
-                    
+
 
                 </Card>
             </div>
