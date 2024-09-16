@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
+
 import './App.css';
 
 import BeerDetail from './components/BeerDetail';
@@ -19,6 +20,7 @@ import BeerList from './components/BeerList';
 import BarList from './components/BarList'; 
 import BarEventsList from './components/BarEventsList'; 
 import Beer from './assets/beer.svg';
+import Map from './components/Map';
 
 function App() {
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ function App() {
     setDrawerOpen(!drawerOpen);
   };
 
-  console.log(loguser);
+
 
   const logout = () => { 
     localStorage.removeItem('loguser');
@@ -93,6 +95,12 @@ function App() {
                 </ListItemIcon>
                 <ListItemText primary="Amigos" className="Text_nav" />
               </ListItem>
+              <ListItem button component={Link} to="/map">
+                <ListItemIcon>
+                  <CottageIcon />
+                </ListItemIcon>
+              <ListItemText primary="Mapa" className="Text_nav" />
+              </ListItem>
               {loguser ? (
                 <ListItem button onClick={logout}>
                   <ListItemIcon>
@@ -100,6 +108,7 @@ function App() {
                   </ListItemIcon>
                   <ListItemText primary="Cerrar sesión" className="Text_nav" />
                 </ListItem>
+                
               ) : (
                 <>
                   <ListItem button component={Link} to="/login">
@@ -114,6 +123,7 @@ function App() {
                     </ListItemIcon>
                     <ListItemText primary="Registrarse" className="Text_nav" />
                   </ListItem>
+                  
                 </>
               )}
             </List>
@@ -130,6 +140,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login setLogUser={setLogUser}/>} />
         <Route path="/beers/:id" element={<BeerDetail />} />
+        <Route path="/map" element={<Map />} />
       </Routes>
     </>
   );
