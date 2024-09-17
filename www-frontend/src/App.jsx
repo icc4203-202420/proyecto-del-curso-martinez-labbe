@@ -21,6 +21,7 @@ import BarList from './components/BarList';
 import BarEventsList from './components/BarEventsList'; 
 import Beer from './assets/beer.svg';
 import Map from './components/Map';
+import BarDetail from './components/BarDetail';
 
 function App() {
   const navigate = useNavigate();
@@ -141,6 +142,7 @@ function App() {
         <Route path="/login" element={<Login setLogUser={setLogUser}/>} />
         <Route path="/beers/:id" element={<BeerDetail />} />
         <Route path="/map" element={<Map />} />
+        <Route path="/bars/:barId" element={<BarDetail />} />
       </Routes>
     </>
   );

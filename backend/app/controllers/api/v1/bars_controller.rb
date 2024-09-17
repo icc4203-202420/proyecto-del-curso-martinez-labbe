@@ -37,12 +37,12 @@ end
 
   def show
     if @bar.image.attached?
-      render json: @bar.as_json.merge({
+      render json: @bar.as_json.merge(include: {address: {only:[:line1, :city]}}).merge({
         image_url: url_for(@bar.image),
         thumbnail_url: url_for(@bar.thumbnail)
       }), status: :ok
     else
-      render json: { bar: @bar.as_json }, status: :ok
+      render json: { bar: @bar.as_json(include: { address: { only: [:line1, :city] } }) }, status: :ok
     end
   end
 

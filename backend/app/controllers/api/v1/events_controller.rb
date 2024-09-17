@@ -56,6 +56,16 @@ class API::V1::EventsController < ApplicationController
     end
   end  
 
+  def attendees
+    @event = Event.find(params[:id])
+    
+    # Asegúrate de que se obtienen los usuarios sin duplicados y solo los que tienen 'checked_in' como true
+    @attendees = @event.users.distinct.joins(:attendances).where('attendances.checked_in = ?', true)
+
+    render json: @attendees.as_json(only: [:id, :first_name, :last_name]), status: :ok
+  end
+  
+
   private
 
   def set_event

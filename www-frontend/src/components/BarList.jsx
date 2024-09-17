@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; //agregue nuevo
 import '../BarList.css'; // Import the CSS file
 
 function BarList() {
   const [bars, setBars] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate(); //agregue nuevo
 
   useEffect(() => {
     // Fetch bars data from the API
@@ -22,6 +24,10 @@ function BarList() {
     bar.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const hanldeBarClick = (barId) => {
+    navigate(`/bars/${barId}`); //agregue nuevo
+  }
+
   return (
     <div className="container">
       <h2 className="heading">Lista de Bares</h2>
@@ -34,7 +40,11 @@ function BarList() {
       />
       <ul className="bar-list-container">
         {filteredBars.map(bar => (
-          <li key={bar.id} className="bar-list-item">{bar.name}</li>
+          <li 
+          key={bar.id} 
+          className="bar-list-item"
+          onClick={() => hanldeBarClick(bar.id)}>
+            {bar.name}</li>
         ))}
       </ul>
     </div>
