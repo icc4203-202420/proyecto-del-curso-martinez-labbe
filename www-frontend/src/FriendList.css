@@ -1,0 +1,47 @@
+/* FriendList.css */
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .heading {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #fae25d;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .friend-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .friend-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid #f9a825;
+    font-size: 1.1rem;
+  }
+  
+  .friend-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* Estilo para que los nombres estén en negro */
+  .friend-name {
+    color: black;
+    font-weight: bold; /* Opcional para resaltar el nombre */
+  }
+  

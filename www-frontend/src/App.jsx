@@ -41,31 +41,28 @@ function App() {
   }
 
   return (
-
     <>
-      <AppBar position="fixed" className="appbar" sx={{backgroundColor: "#DABB3F"}}>
+      <AppBar position="fixed" className="appbar" sx={{ backgroundColor: "#DABB3F" }}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
             <img src={Beer} alt="beer-icon" className="beer-icon" />
           </IconButton>
-          <Typography variant="h3" position="center" component="div" sx={{ flexGrow: 1 }} className='appname'>
+          <Typography variant="h3" component="div" sx={{ flexGrow: 1 }} className='appname'>
             BeerMeApp
           </Typography>
-          
-          
+
           <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer}>
             <List>
-
               {loguser ? (
-            <ListItem> 
-              <ListItemIcon>
-                <AccountCircleIcon /> 
-              </ListItemIcon>    
-              <Typography variant="h4" component="div" sx={{ flexGrow: 1 }} className='username'>
-                {loguser.first_name}
-              </Typography>
-            </ListItem>
-          ) : null}
+                <ListItem>
+                  <ListItemIcon>
+                    <AccountCircleIcon />
+                  </ListItemIcon>
+                  <Typography variant="h4" component="div" sx={{ flexGrow: 1 }} className='username'>
+                    {loguser.first_name}
+                  </Typography>
+                </ListItem>
+              ) : null}
               <ListItem button component={Link} to="/">
                 <ListItemIcon>
                   <CottageIcon />
@@ -88,7 +85,7 @@ function App() {
                 <ListItemIcon>
                   <CottageIcon />
                 </ListItemIcon>
-                <ListItemText primary="Events" className="Text_nav" />
+                <ListItemText primary="Eventos" className="Text_nav" />
               </ListItem>
               <ListItem button component={Link} to="/friends">
                 <ListItemIcon>
@@ -100,7 +97,7 @@ function App() {
                 <ListItemIcon>
                   <CottageIcon />
                 </ListItemIcon>
-              <ListItemText primary="Mapa" className="Text_nav" />
+                <ListItemText primary="Mapa" className="Text_nav" />
               </ListItem>
               {loguser ? (
                 <ListItem button onClick={logout}>
@@ -109,7 +106,6 @@ function App() {
                   </ListItemIcon>
                   <ListItemText primary="Cerrar sesión" className="Text_nav" />
                 </ListItem>
-                
               ) : (
                 <>
                   <ListItem button component={Link} to="/login">
@@ -124,7 +120,6 @@ function App() {
                     </ListItemIcon>
                     <ListItemText primary="Registrarse" className="Text_nav" />
                   </ListItem>
-                  
                 </>
               )}
             </List>
@@ -132,18 +127,21 @@ function App() {
         </Toolbar>
       </AppBar>
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/beers" element={<BeerList />} />
-        <Route path="/bars" element={<BarList />} /> 
-        <Route path="/events" element={<BarEventsList />} />
-        <Route path="/friends" element={<FriendList />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login setLogUser={setLogUser}/>} />
-        <Route path="/beers/:id" element={<BeerDetail />} />
-        <Route path="/map" element={<Map />} />
-        <Route path="/bars/:barId" element={<BarDetail />} />
-      </Routes>
+      {/* Aquí ajustamos el contenido principal para que esté debajo de la AppBar */}
+      <div className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/beers" element={<BeerList />} />
+          <Route path="/bars" element={<BarList />} /> 
+          <Route path="/events" element={<BarEventsList />} />
+          <Route path="/friends" element={<FriendList />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login setLogUser={setLogUser}/>} />
+          <Route path="/beers/:id" element={<BeerDetail />} />
+          <Route path="/map" element={<Map />} />
+          <Route path="/bars/:barId" element={<BarDetail />} />
+        </Routes>
+      </div>
     </>
   );
 }

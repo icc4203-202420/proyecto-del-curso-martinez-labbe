@@ -33,6 +33,10 @@ Rails.application.routes.draw do
 
       resources :users do
         resources :reviews, only: [:index, :show, :create, :update, :destroy]
+
+        collection do #nuevo
+          get 'search', to: 'users#search'
+        end
       end
       
       resources :reviews, only: [:index, :show, :create, :update, :destroy]

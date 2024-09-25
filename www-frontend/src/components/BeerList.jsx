@@ -29,14 +29,8 @@ function BeerList() {
 
 
   return (
-    <div className="container">
-      
-          <IconButton edge="start" color="inherit" aria-label="menu">
-            {/* Add menu icon */}
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Lista de Cervezas
-          </Typography>
+    <div className="container">   
+          <h2 className="heading">Lista de Bares</h2>
           <input
             type="text"
             className="search-input"
@@ -44,41 +38,21 @@ function BeerList() {
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
-        
-      
-      <Drawer>
-        <List>
-          {/* Add list items for navigation */}
-        </List>
-      </Drawer>
-      <ul className="beer-list-container">
-        {filteredBeers.map(beer => (
-          <React.Fragment key={beer.id}>
-            {logUser ? (
-              // If user is logged in, render a clickable link to the beer details
-              <Link to={`/beers/${beer.id}`} className="beer-link">
-                <ListItem className="beer-list-item">
-                  <ListItemIcon>
-                    {/* Add icon for each beer */}
-                  </ListItemIcon>
-                  <ListItemText primary={beer.name} />
-                </ListItem>
-              </Link>
-            ) : (
-              // If user is not logged in, render the beer name without the link
-              <ListItem className="beer-list-item">
-                <ListItemIcon>
-                  {/* Add icon for each beer */}
+      <div className="beer-list-container">
+        <ul className="beer-list">
+          {filteredBeers.map(beer => (
+            <Link to={`/beers/${beer.id}`} key={beer.id}>
+              <ListItem key={beer.id} className="beer-list-item">
+                <ListItemIcon>🍺
                 </ListItemIcon>
                 <ListItemText primary={beer.name} />
               </ListItem>
-            )}
-          </React.Fragment>
-        ))}
-      </ul>
+            </Link>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
-
 
 export default BeerList;

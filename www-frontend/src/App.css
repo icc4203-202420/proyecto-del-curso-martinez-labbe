@@ -1,4 +1,8 @@
-
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
 .beer-icon {
   height: 1em;
@@ -6,27 +10,41 @@
 }
 
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
-.Text_nav{
+.appbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.main-content {
+  margin-top: 64px; /* Ajusta según la altura de tu barra de navegación */
+  padding: 2rem;
+  flex-grow: 1;
+  overflow-y: auto; /* Asegura que el contenido sea desplazable */
+}
+
+.Text_nav {
   font-size: 1.5em;
   font-weight: bold;
   color: #DABB3F;
 }
 
-.appname{
+.appname {
   font-size: 6em;
   font-weight: bold;
   color: #000000;
+  text-align: center; /* Alinea el texto al centro */
+  margin: 0 auto; /* Asegura que ocupe el espacio justo */
 }
 
-.username{
+.username {
   font-size: 2em;
   font-weight: bold;
   color: #E3B600;
 }
-

@@ -28,6 +28,16 @@ class API::V1::UsersController < ApplicationController
     end
   end
 
+  def search
+    if params[:handle].present?
+      # Buscar usuarios cuyo nombre o apellido contengan el término de búsqueda
+      @users = User.where("first_name LIKE :handle OR last_name LIKE :handle", handle: "%#{params[:handle]}%")
+      render json: @users, status: :ok
+    else
+      render json: { error: 'Handle parameter is missing' }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_user
