@@ -37,9 +37,16 @@ Rails.application.routes.draw do
         collection do #nuevo
           get 'search', to: 'users#search'
         end
+
+        member do
+          get 'friends', to: 'users#friends'
+        end
       end
       
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
+
+      resources :friendships, only: [:create, :destroy]
+      
     end
   end
 end

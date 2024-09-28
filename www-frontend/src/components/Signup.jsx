@@ -93,15 +93,21 @@ function Signup() {
       />
       
       <TextField
-        label="Handle (e.g., @kingofbeers)"
-        name="handle"
-        value={formik.values.handle}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.handle && Boolean(formik.errors.handle)}
-        helperText={formik.touched.handle && formik.errors.handle}
-        required
-      />
+      label="Handle (e.g., @kingofbeers)"
+      name="handle"
+      value={formik.values.handle.startsWith('@') ? formik.values.handle : `@${formik.values.handle}`}
+      onChange={e => {
+        let value = e.target.value;
+        if (!value.startsWith('@')) {
+          value = `@${value}`;
+        }
+        formik.setFieldValue('handle', value);
+      }}
+      onBlur={formik.handleBlur}
+      error={formik.touched.handle && Boolean(formik.errors.handle)}
+      helperText={formik.touched.handle && formik.errors.handle}
+      required
+    />
       
       
       

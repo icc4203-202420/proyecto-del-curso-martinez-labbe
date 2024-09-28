@@ -1,4 +1,4 @@
-class API::V1::FriendshipController < ApplicationController
+class API::V1::FriendshipsController < ApplicationController
   include Authenticable
 
   respond_to :json
@@ -27,8 +27,6 @@ class API::V1::FriendshipController < ApplicationController
   private
 
   def friendship_params
-    params.fetch(:friendship, {}).
-        permit(:user_id, :friend_id)
+    params.require(:friendship).permit(:user_id, :friend_id)
   end
-
 end

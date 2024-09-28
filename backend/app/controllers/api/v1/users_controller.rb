@@ -4,6 +4,7 @@ class API::V1::UsersController < ApplicationController
   
   def index
     @users = User.includes(:reviews, :address).all   
+    render json: @users, status: :ok
   end
 
   def show
@@ -30,12 +31,23 @@ class API::V1::UsersController < ApplicationController
 
   def search
     if params[:handle].present?
-      # Buscar usuarios cuyo nombre o apellido contengan el término de búsqueda
-      @users = User.where("first_name LIKE :handle OR last_name LIKE :handle", handle: "%#{params[:handle]}%")
+      # Asegurarnos de que el handle siempre comience con '@' y no tenga espacios extra
+      search_handle = params[:handle].strip
+      search_handle = search_handle.start_with?('@') ? search_handle : "@#{search_handle}"
+  
+      # Buscar usuarios cuyo handle coincida exactamente con el término de búsqueda
+      @users = User.where("handle = ?", search_handle)
+      
       render json: @users, status: :ok
     else
       render json: { error: 'Handle parameter is missing' }, status: :unprocessable_entity
     end
+  end
+  
+  def friends
+    @user = User.find(params[:id])
+    @friends = @user.friends
+    render json: @friends, status: :ok
   end
 
   private
