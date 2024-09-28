@@ -1,8 +1,12 @@
 class API::V1::FriendshipsController < ApplicationController
-  include Authenticable
-
+  # include Authenticable
   respond_to :json
-  before_action :verify_jwt_token, only: [:create, :destroy]
+  # before_action :verify_jwt_token, only: [:create, :destroy]
+
+  def index
+    @friendships = Friendship.all
+    render json: @friendships, status: :ok
+  end
 
   def create
     @friendship = Friendship.new(friendship_params)

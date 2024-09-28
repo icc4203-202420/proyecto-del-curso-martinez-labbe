@@ -45,7 +45,7 @@ Rails.application.routes.draw do
       
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
 
-      resources :friendships, only: [:create, :destroy]
+      resources :friendships, only: [:index, :create, :destroy]
       
     end
   end
