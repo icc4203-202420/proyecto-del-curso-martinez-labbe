@@ -6,9 +6,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 
 
-
-
-
 import './App.css';
 
 import BeerDetail from './components/BeerDetail';
@@ -22,6 +19,8 @@ import BarEventsList from './components/BarEventsList';
 import Beer from './assets/beer.svg';
 import Map from './components/Map';
 import BarDetail from './components/BarDetail';
+import EventPictureUpload from './components/EventPictureUpload';
+import EventDetail from './components/EventDetail'; 
 
 function App() {
   const navigate = useNavigate();
@@ -140,6 +139,8 @@ function App() {
           <Route path="/beers/:id" element={<BeerDetail />} />
           <Route path="/map" element={<Map />} />
           <Route path="/bars/:barId" element={<BarDetail />} />
+          <Route path="/bars/:barId/events/:id" element={<EventDetail />} /> {/* Ruta para detalles del evento */}
+          <Route path="/bars/:barId/events/:id/event_pictures" element={<EventPictureUpload />} /> {/* Ruta para subir fotos */}
         </Routes>
       </div>
     </>

@@ -8,6 +8,20 @@ const FriendList = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [friends, setFriends] = useState([]); // Lista de amigos
 
+  const currentUser = JSON.parse(localStorage.getItem('loguser')); // Obtener el usuario actual logueado
+
+  useEffect(() => {
+    const loadFriends = async () => {
+      try {
+        const response = await fetchAxios.get(`/users/${currentUser.id}/friends`);
+        setFriends(response.data); // Almacena la lista de amigos
+      } catch (error) {
+        console.error('Error loading friends:', error);
+      }
+    };
+    loadFriends();
+  }, [currentUser.id]);
+
   useEffect(() => {
     const searchFriends = async () => {
       if (searchTerm.trim() !== '') {
@@ -34,6 +48,7 @@ const FriendList = () => {
 
       if (response.status === 200) {
         // Actualizar la lista de amigos
+        const newFriend = searchResults.find(friend => friend.id === friendId);
         setFriends([...friends, searchResults.find(friend => friend.id === friendId)]);
         alert('Amigo agregado con éxito');
       }
@@ -66,7 +81,7 @@ const FriendList = () => {
         ))}
       </ul>
       ) : (
-        <p>No se encontraron resultados</p>
+        <font color = "black">No se encontraron resultados</font>
       )}
 
       <div className="friends-container">
@@ -80,7 +95,7 @@ const FriendList = () => {
             ))}
           </ul>
         ) : (
-          <p>No tienes amigos aún.</p>
+          <font color ="black">No tienes amigos aún.</font>
         )}
       </div>
     </div>

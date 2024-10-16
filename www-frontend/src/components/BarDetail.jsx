@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import './BarDetail.css'; // Asegúrate de que el archivo CSS esté vinculado correctamente
+import { useParams, useNavigate } from 'react-router-dom'; // Importa useNavigate para la navegación
+import EventPictureUpload from './EventPictureUpload';
+import './BarDetail.css';
 
 function BarDetail() {
   const [bar, setBar] = useState(null);
@@ -9,12 +10,12 @@ function BarDetail() {
   const [attendance, setAttendance] = useState(null);
   const [attendees, setAttendees] = useState({});
   const [message, setMessage] = useState('');
-  const [refresh, setRefresh] = useState(false); 
+  const [refresh, setRefresh] = useState(false);
   const { barId } = useParams();
-  const currentUser = JSON.parse(localStorage.getItem('currentUser')); 
+  const navigate = useNavigate(); // Inicializa useNavigate
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   useEffect(() => {
-    // Obtener detalles del bar
     axios.get(`http://localhost:3001/api/v1/bars/${barId}`)
       .then(response => {
         setBar(response.data.bar);
@@ -23,7 +24,6 @@ function BarDetail() {
         console.error('Error obteniendo detalles del bar:', error);
       });
 
-    // Obtener eventos del bar
     axios.get(`http://localhost:3001/api/v1/bars/${barId}/events`)
       .then(response => {
         setEvents(response.data);
@@ -34,68 +34,61 @@ function BarDetail() {
 
   }, [barId]);
 
-  useEffect(() => {
-    if (!currentUser) return;
-
-    // Verificar si el usuario ya ha hecho "check-in"
-    axios.get(`http://localhost:3001/api/v1/bars/${barId}/events/attendances`, {
-      params: { user_id: currentUser.id }
-    })
-    .then((res) => {
-      setAttendance(res.data[0]); // Almacenar la asistencia en el estado
-    })
-    .catch((error) => {
-      console.error('Error obteniendo la asistencia:', error);
-    });
-  }, [barId, currentUser, refresh]);
-
-  const handleCheckIn = (eventId) => {
+  const handleAttend = (eventId) => {
     if (!currentUser) {
-      alert('Debes iniciar sesión para asistir a un evento.');
+      alert('You must be logged in to attend an event.');
       return;
     }
 
     if (attendance) {
-      axios.put(`http://localhost:3001/api/v1/attendances/${attendance.id}`, { 
-        user_id: currentUser.id, 
-        event_id: eventId, 
-        checked_in: true 
+      axios.put(`/attendances/${attendance.id}`, {
+        "user_id": currentUser.id,
+        "event_id": eventId,
+        "checked_in": true
+      }, {
+        headers: { Authorization: `Bearer ${currentUser.token}` }
       })
       .then((res) => {
         setAttendance(res.data.attendance);
-        setMessage('Asistencia confirmada');
-        setRefresh(!refresh); // Refrescar la página
+        setMessage('Asistencia actualizada');
       })
       .catch((error) => {
         console.error('Error actualizando la asistencia:', error);
-        setMessage('Error al confirmar la asistencia');
+        setMessage('Error al actualizar la asistencia');
       });
     } else {
-      axios.post(`http://localhost:3001/api/v1/attendances`, { 
-        user_id: currentUser.id, 
-        event_id: eventId, 
-        checked_in: true 
+      axios.post(`/attendances`, {
+        "user_id": currentUser.id,
+        "event_id": eventId,
+        "checked_in": true
+      }, {
+        headers: { Authorization: `Bearer ${currentUser.token}` }
       })
       .then((res) => {
         setAttendance(res.data.attendance);
         setMessage('Asistencia confirmada');
-        setRefresh(!refresh); // Refrescar la página
       })
       .catch((error) => {
-        console.error('Error al confirmar la asistencia:', error);
+        console.error('Error posteando asistencia:', error);
         setMessage('Error al confirmar la asistencia');
       });
     }
   };
 
   const handleShowAttendees = (eventId) => {
-    axios.get(`http://localhost:3001/api/v1/bars/${barId}/events/${eventId}/attendees`)
-      .then(response => {
-        setAttendees(prev => ({ ...prev, [eventId]: response.data }));
-      })
-      .catch(error => {
-        console.error('Error obteniendo asistentes:', error);
-      });
+    axios.get(`http://localhost:3001/api/v1/bars/${barId}/events/${eventId}/attendees`, {
+      headers: { Authorization: `Bearer ${currentUser.token}` }
+    })
+    .then(response => {
+      setAttendees(prev => ({ ...prev, [eventId]: response.data }));
+    })
+    .catch(error => {
+      console.error('Error obteniendo asistentes:', error);
+    });
+  };
+
+  const handleEventDetail = (eventId) => {
+    navigate(`/bars/${barId}/event/${eventId}`); // Navega a la URL del detalle del evento
   };
 
   if (!bar) {
@@ -120,7 +113,7 @@ function BarDetail() {
               <p>Fecha: {new Date(event.start_date).toLocaleString()}</p>
 
               {/* Botón para confirmar asistencia */}
-              <button onClick={() => handleCheckIn(event.id)}>Confirmar asistencia</button>
+              <button onClick={() => handleAttend(event.id)}>Confirmar asistencia</button>
               {message && <p>{message}</p>}
 
               {/* Botón para mostrar lista de asistentes */}
@@ -137,6 +130,9 @@ function BarDetail() {
                   </ul>
                 </div>
               )}
+
+              {/* Nuevo botón para ver los detalles del evento */}
+              <button onClick={() => handleEventDetail(event.id)}>Ver detalles del evento</button>
             </li>
           ))
         )}

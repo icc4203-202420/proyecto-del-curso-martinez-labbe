@@ -109,8 +109,6 @@ function Signup() {
       required
     />
       
-      
-      
       <TextField
         label="Contraseña"
         name="password"

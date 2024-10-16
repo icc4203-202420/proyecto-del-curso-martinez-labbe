@@ -19,11 +19,13 @@ Rails.application.routes.draw do
       resources :bars do
         resources :events do
           resources :attendances, only: [:create, :index] # POST for checking in
+          resources :event_pictures, only: [:create, :index, :show]
+          
           get 'attendees', on: :member # GET for listing attendees
         end
       end
 
-      resources :events, only: [:index]
+      resources :events, only: [:index, :show]
       
       resources :beers do
         member do
