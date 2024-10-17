@@ -10,7 +10,7 @@ class API::V1::BeersController < ApplicationController
   def index
     @beers = Beer.all
     render json: { beers: @beers }, status: :ok
-  end
+  end 
 
   # def index
   #   @beers = Rails.cache.fetch("beers", expires_in: 12.hours) do

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 
-export default function Home({ setIsAuthenticated }) {
+export default function Home({ navigation,setIsAuthenticated }) {
   const handleLogout = () => {
     setIsAuthenticated(false); //Cierre de sesion
   };
