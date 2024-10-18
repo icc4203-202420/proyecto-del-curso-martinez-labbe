@@ -1,57 +1,62 @@
-import React, { useState } from 'react';
-import {View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native';
-import {Input} from 'react-native-elements';
-import {Form, Formik} from 'formik';
+import React from 'react';
+import { View, Button, StyleSheet } from 'react-native';
+import { Input } from 'react-native-elements';
+import { Formik } from 'formik';
 import * as yup from 'yup';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const validationScheam=yup.object().shape({
-    email:yup.string().email('Porfavor Ingresar un email valido...').required('Email es requerido'),
-    password:yup.string().min(6, 'La contraseña requiere 6 caracteres').required('Password es requerido')
+// Validation schema using Yup
+const validationSchema = yup.object().shape({
+    email: yup.string().email('Por favor, ingresa un email válido.').required('Email es requerido'),
+    password: yup.string().min(6, 'La contraseña requiere al menos 6 caracteres').required('Contraseña es requerida')
 });
 
-
-export default function Login({setIsAuthenticated, navigation}) {
-
-    const handleSumbit = async (values) => {
+export default function Login({ setIsAuthenticated, navigation, setUser }) {
+    const handleSubmit = async (values) => {
         try {
-            const response = await fetch('http://192.168.0.13:3001/api/v1/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+            const response = await axios.post('https://c91e-200-124-48-32.ngrok-free.app/api/v1/login', 
+                {
                     user: {
                         email: values.email,
                         password: values.password,
                     },
-                }),
-            }); 
-            const data = await response.json();
+                }, 
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const userData = response.data.status.data.user;
 
             if (response.status === 200) {
                 alert('Login Exitoso');
                 setIsAuthenticated(true);
+                setUser(userData);
+                console.log('User:', userData);
                 navigation.navigate('Home');
-            } 
-            else {
-                alert('Error: ${data.status.message}');
+                await AsyncStorage.setItem('user', JSON.stringify(userData)); // Store user data
+            } else {
+                alert(`Error: ${response.data.status.message}`); // Corrected error handling
             }
         } catch (error) {
             console.error('Error en el login:', error);
-            alert('Error', 'Error en el login');
+            alert('Error en el login: ' + error.message); // More descriptive error message
         }
     };
             
     return (
         <Formik
-            initialValues={{email:'', password:''}}
-            validationSchema={validationScheam}
-            onSubmit={handleSumbit}
+            initialValues={{ email: '', password: '' }}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
         >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-                <View style={style.outercontainer}>
-                    <View style={style.container}>
-                        <Input style={style.inputText}
+                <View style={styles.outerContainer}>
+                    <View style={styles.container}>
+                        <Input
                             placeholder='Email'
                             placeholderTextColor='#f9a825'
                             onChangeText={handleChange('email')}
@@ -59,19 +64,17 @@ export default function Login({setIsAuthenticated, navigation}) {
                             value={values.email}
                             errorMessage={errors.email && touched.email ? errors.email : null}
                         />
-                        <Input style={style.inputText}
+                        <Input
                             placeholder='Password'
                             placeholderTextColor='#f9a825'
                             onChangeText={handleChange('password')}
                             onBlur={handleBlur('password')}
                             value={values.password}
-                            SecureTextEntry
+                            secureTextEntry // Corrected prop name
                             errorMessage={errors.password && touched.password ? errors.password : null}
                         />
                         <Button title='Iniciar Sesión' onPress={handleSubmit} />
-                        <Button title='No tienes cuenta? Registrate' onPress={() => navigation.navigate('Register')}
-                            color='#f9a825'
-                        />
+                        <Button title='No tienes cuenta? Regístrate' onPress={() => navigation.navigate('Register')} color='#f9a825' />
                     </View>
                 </View>
             )}
@@ -79,17 +82,17 @@ export default function Login({setIsAuthenticated, navigation}) {
     );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',  // Fondo del formulario
+        backgroundColor: '#fff',
         padding: 20,
-        borderRadius: 10,  // Esquinas redondeadas del formulario
+        borderRadius: 10,
         width: '90%',
-        shadowColor: '#000',  // Sombra para resaltar el contenedor
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 5,
-        elevation: 5,  // Sombra para Android
+        elevation: 5,
     },
     inputText: {
         marginBottom: 10,
@@ -97,7 +100,7 @@ const style = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#fff'
     },
-    outercontainer: {
+    outerContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
