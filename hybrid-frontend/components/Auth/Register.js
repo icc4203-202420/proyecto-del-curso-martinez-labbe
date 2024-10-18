@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Input } from 'react-native-elements';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 
 // Esquema de validación con Yup
 const validationSchema = Yup.object().shape({
@@ -16,12 +17,8 @@ const validationSchema = Yup.object().shape({
 export default function Register({ navigation }) {
   const handleSubmit = async (values) => {
     try {
-      const response = await fetch('http://192.168.0.13:3001/api/v1/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const response = await axios.post('https://c91e-200-124-48-32.ngrok-free.app/api/v1/signup', 
+        {
           user: {
             first_name: values.firstname,
             last_name: values.lastname,
@@ -29,10 +26,15 @@ export default function Register({ navigation }) {
             email: values.email,
             password: values.password,
           },
-        }),
-      });
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      const data = await response.json();
+      
 
       if (response.status === 200) {
         alert('Registro Exitoso');

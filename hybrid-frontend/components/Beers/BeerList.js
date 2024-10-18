@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 function BeerList() {
     const [beers, setBeers] = useState([]);
@@ -13,18 +14,20 @@ function BeerList() {
 
     const fetchBeers = async () => {
         try {
-            const response = await fetch('http://192.168.0.13:3001/api/v1/beers');
-            const data = await response.json();
-            setBeers(data.beers || []);
+            const response = await axios.get('https://c91e-200-124-48-32.ngrok-free.app/api/v1/beers'); // Your API endpoint
+            console.log(response.data); // Log the entire response
+            setBeers(response.data.beers || []); // Update the state with the beers data
         } catch (error) {
             console.error('Error fetching beers:', error);
         }
     };
+    
 
     const filteredBeers = beers.filter(beer =>
         beer.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    
     return (
         <ScrollView style={styles.pageContainer}>
             <View style={styles.container}>
@@ -54,7 +57,7 @@ function BeerList() {
             </View>
         </ScrollView>
     );
-}
+} 
 
 const styles = StyleSheet.create({
     pageContainer: {
